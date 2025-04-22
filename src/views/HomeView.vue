@@ -8,6 +8,7 @@
         </a-layout-header>
         <!-- 内容区域 -->
         <div class="hero-section">
+            <a-button class="no-export" @click="handleExport">导出PDF</a-button>
             <h1>Welcome to Open-Landscape</h1>
             <p>Discover the latest trends and innovations in technology.</p>
             <a-button type="primary">Learn More</a-button>
@@ -16,12 +17,11 @@
             <div v-for="category in companyCategories" :key="category.name" class="category-section">
                 <h2>{{ category.name }}</h2>
                 <div class="company-icons">
-                <a-card class="company-card" v-for="(company, index) in category.companies" :key="index">
-                    <img :src="company.logo" alt="company.name">
-                </a-card>
+                    <a-card class="company-card" v-for="(company, index) in category.companies" :key="index">
+                        <img :src="company.logo" alt="company.name">
+                    </a-card>
+                </div>
             </div>
-            </div>
-            
         </a-layout-content>
         <!-- 页脚 -->
         <a-layout-footer>
@@ -32,6 +32,8 @@
 </template>
   
 <script>
+import { exportToPDF } from "@/utils/pdfExport";
+
 export default {
     name: 'App',
     data() {
@@ -69,62 +71,13 @@ export default {
                     ]
                 }
             ],
-            companyList:[
-                {
-                    name: 'Company 1',
-                    logo: require('@/assets/logo01.png')
-                },
-                {
-                    name: 'Company 2',
-                    logo: require('@/assets/logo02.png')
-                },
-                {
-                    name: 'Company 3',
-                    logo: require('@/assets/logo03.png')
-                },
-                {
-                    name: 'Company 1',
-                    logo: require('@/assets/logo04.png')
-                },
-                {
-                    name: 'Company 2',
-                    logo: require('@/assets/logo03.png')
-                },
-                {
-                    name: 'Company 3',
-                    logo: require('@/assets/logo01.png')
-                },
-                {
-                    name: 'Company 3',
-                    logo: require('@/assets/logo04.png')
-                },
-                {
-                    name: 'Company 1',
-                    logo: require('@/assets/logo.png')
-                },
-                {
-                    name: 'Company 2',
-                    logo: require('@/assets/logo01.png')
-                },
-                {
-                    name: 'Company 3',
-                    logo: require('@/assets/logo04.png')
-                },
-                {
-                    name: 'Company 1',
-                    logo: require('@/assets/logo02.png')
-                },
-                {
-                    name: 'Company 2',
-                    logo: require('@/assets/logo03.png')
-                },
-                {
-                    name: 'Company 3',
-                    logo: require('@/assets/logo04.png')
-                },
-            ],
         };
     },
+    methods: {
+        async handleExport(){
+            exportToPDF('app','landscape.pdf')
+        }
+    }
 };
 </script>
 
