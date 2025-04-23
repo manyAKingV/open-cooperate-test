@@ -7,27 +7,80 @@
             </div>
         </a-layout-header>
         <!-- 内容区域 -->
-        <div class="hero-section">
-            <a-button class="no-export" @click="handleExport">导出PDF</a-button>
-            <h1>Welcome to Open-Landscape</h1>
-            <p>Discover the latest trends and innovations in technology.</p>
-            <a-button type="primary">Learn More</a-button>
-        </div>
         <a-layout-content class="content-container">
-            <div v-for="category in companyCategories" :key="category.name" class="category-section">
-                <h2>{{ category.name }}</h2>
-                <div class="company-icons">
-                    <div class="company-card" v-for="(company, index) in category.companies" :key="index" @click="fetchChick(category.index,index)">
-                        <img :src="company.logo" alt="company.name">
+            <div class="tech-layer">
+                <div class="section-title">应用层</div>
+                <div class="ai-framework">
+                    <div class="ai-frameworks">
+                    <h3 class="sub-title">智能城市</h3>
+                    <div class="grid-container">
+                        <div class="grid-item" v-for="(img, index) in 6" :key="index">
+                            <img :src="'/static/icon/pytorch.png'" alt="智能城市" class="tech-img" />
+                        </div>
+                    </div>
+                    </div>
+                    <div class="ai-frameworks">
+                        <h3 class="sub-title">智能交通</h3>
+                        <div class="grid-container">
+                            <div class="grid-item" v-for="(img, index) in 6" :key="index">
+                                <img :src="`/static/icon/pytorch.png`" alt="智能交通" class="tech-img" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ai-frameworks">
+                        <h3 class="sub-title">智慧物流</h3>
+                        <div class="grid-container">
+                            <div class="grid-item" v-for="(img, index) in 6" :key="index">
+                                <img :src="`/static/icon/pytorch.png`" alt="智慧物流" class="tech-img" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ai-frameworks">
+                        <h3 class="sub-title">智慧物流2</h3>
+                        <div class="grid-container">
+                            <div class="grid-item" v-for="(img, index) in 6" :key="index">
+                                <img :src="`/static/icon/pytorch.png`" alt="智慧物流2" class="tech-img" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+            </div>
+            <div class="tech-layer">
+                <div class="section-title">服务层</div>
+                <div class="ai-frameworks">
+                    <h3 class="sub-title">AI框架、工具和库</h3>
+                    <div class="grid-container">
+                        <div class="grid-item" v-for="(img, index) in 6" :key="index">
+                            <img :src="`/static/icon/pytorch.png`" alt="AI工具" class="tech-img" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tech-layer">
+                <div class="section-title">技术层</div>
+                <div class="ai-frameworks">
+                    <h3 class="sub-title">AI框架、工具和库</h3>
+                    <div class="grid-container">
+                        <div class="grid-item" v-for="(img, index) in 6" :key="index">
+                            <img :src="`/static/icon/pytorch.png`" alt="AI工具" class="tech-img" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tech-layer">
+                <div class="section-title">基础设施</div>
+                <div class="ai-frameworks">
+                    <h3 class="sub-title">AI框架、工具和库</h3>
+                    <div class="grid-container">
+                        <div class="grid-item" v-for="(img, index) in 6" :key="index">
+                            <img :src="`/static/icon/pytorch.png`" alt="AI工具" class="tech-img" />
+                        </div>
                     </div>
                 </div>
             </div>
         </a-layout-content>
-        <!-- 页脚 -->
-        <a-layout-footer>
-            <div class="bottom-text">@北京云网互科技有限公司</div>
-            <div class="bottom-text">京ICP备2025XXXX号</div>
-        </a-layout-footer>
     </div>
 </template>
   
@@ -40,73 +93,24 @@ export default {
     name: 'App',
     data() {
         return {
-            categories:[
-                {
-                    index:'banking',
-                    name:'金融',
-                },
-                {
-                    index:'medical',
-                    name:'医疗',
-                },
-                {
-                    index:'government',
-                    name:'政府'
-                },
-            ],
-
-            companyCategories:[
-                {
-                    name: '金融',
-                    index:'banking',
-                    companies: []
-                },
-                {
-                    name: '医疗',
-                    index:'medical',
-                    companies: []
-                },
-                {
-                    name: '政府',
-                    index:'government',
-                    companies: []
-                }
-            ],
+        
         };
     },
+
+    beforeMount(){
+
+    },
     async mounted(){
-        await this.init();
+        
     },
 
     methods: {
-        async init(){
-            // 获取json数据 并正常展示
-            const categoriesContext = require.context('../categories', true, /\.json$/);
-            
-            this.categories.forEach(e => {
-                const x = e.index;
-                const arr = categoriesContext(`./${x}/${x}.json`);
-                let category = this.companyCategories.find(m=>m.index === e.index)
-                if (category) {
-                    arr.forEach(m=>{
-                        m.logo = require(`@/categories/${x}/${m.logo}`)
-                        category.companies.push(m)
-                    })
-                }
-            });
-            console.log(this.companyCategories);
-            
-        },
         // 导出pdf功能
         async handleExport(){
             // 输入div的class 和 导出的名称
             exportToPDF('app','landscape.pdf')
         },
-        async fetchChick(category,index){
-            console.log(category,index); 
-            let ctg = this.companyCategories.find(x=>x.index === category)
-            console.log(ctg.companies[index])
-        }
+
     }
 };
 </script>
@@ -124,63 +128,70 @@ export default {
     font-weight: bold;
 }
 
-.hero-section {
-  background: url('https://picsum.photos/1920/1080') no-repeat center center;
-  background-size: cover;
-  height: 500px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  text-align: center;
-}
-
-.hero-section h1 {
-  font-size: 48px;
-  margin-bottom: 20px;
-}
-
-.hero-section p {
-  font-size: 24px;
-  margin-bottom: 40px;
-}
-
 .content-container {
     padding: 50px;
     background-color: #f5f5f5;
 }
 
-.company-icons {
+.tech-layer {
+    display: flex;
+    border: 2px solid #1890ff; /* Ant Design主题蓝色边框 */
+    border-radius: 8px;
+    background: #f0f9ff; /* 浅蓝色背景 */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 阴影增强层次感 */
+    margin: 1%;
+}
+
+.section-title {
+  color: #1890ff;
+  margin-bottom: 16px;
+  font-size: 20px;
   display: flex;
   flex-wrap: wrap;
-  justify-content: left;
-  gap: 20px;
+  padding: 20px;
 }
 
-.company-card {
-  height: 75px;
-  width: auto;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 10%;
-  transition: transform 0.3s ease;
+.ai-framework {
+    display: flex;
+    flex-wrap: wrap;
 }
 
-.company-card:hover {
-  transform: translateY(-5px);
+.ai-frameworks {
+  border: 1px dashed #69c0ff; /* 虚线边框区分层级 */
+  border-radius: 6px;
+  width: 30%;
+  padding: 0.5%;
+  margin-top: 0.5%;
+  margin-bottom: 0.5%;
+  margin-left: 10px;
+  background: white;
 }
 
-.company-card img {
+.sub-title {
+  color: #595959;
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+.grid-container {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.grid-item {
+  text-align: center;
+  padding: 8px;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  transition: transform 0.2s; /* 悬停动画 */
+}
+
+.grid-item:hover {
+  transform: translateY(-4px);
+}
+
+.tech-img {
   width: 100%;
-  height: 100%;
-  object-fit: contain;
+  object-fit: contain; /* 保持图片比例 */
 }
 
-a-layout-footer {
-    background: #333;
-    color: white;
-    text-align: center;
-    padding: 20px;
-    font-size: smaller;
-}
 </style>    
