@@ -17,9 +17,9 @@
             <div v-for="category in companyCategories" :key="category.name" class="category-section">
                 <h2>{{ category.name }}</h2>
                 <div class="company-icons">
-                    <a-card class="company-card" v-for="(company, index) in category.companies" :key="index">
+                    <div class="company-card" v-for="(company, index) in category.companies" :key="index" @click="fetchChick(category.index,index)">
                         <img :src="company.logo" alt="company.name">
-                    </a-card>
+                    </div>
                 </div>
             </div>
         </a-layout-content>
@@ -34,48 +34,78 @@
 <script>
 import { exportToPDF } from "@/utils/pdfExport";
 
+
+
 export default {
     name: 'App',
     data() {
         return {
+            categories:[
+                {
+                    index:'banking',
+                    name:'金融',
+                },
+                {
+                    index:'medical',
+                    name:'医疗',
+                },
+                {
+                    index:'government',
+                    name:'政府'
+                },
+            ],
+
             companyCategories:[
                 {
                     name: '金融',
-                    companies: [
-                        { logo: require('@/assets/logo01.png'), name: '金融公司1' },
-                        { logo: require('@/assets/logo02.png'), name: '金融公司2' },
-                        { logo: require('@/assets/logo01.png'), name: '金融公司3' },
-                        { logo: require('@/assets/logo01.png'), name: '金融公司1' },
-                        { logo: require('@/assets/logo01.png'), name: '金融公司2' },
-                        { logo: require('@/assets/logo03.png'), name: '金融公司3' },
-                        { logo: require('@/assets/logo01.png'), name: '金融公司3' },
-                        { logo: require('@/assets/logo01.png'), name: '金融公司1' },
-                        { logo: require('@/assets/logo01.png'), name: '金融公司2' },
-                        { logo: require('@/assets/logo03.png'), name: '金融公司3' }
-                    ]
+                    index:'banking',
+                    companies: []
                 },
                 {
                     name: '医疗',
-                    companies: [
-                        { logo: require('@/assets/logo04.png'), name: '医疗公司1' },
-                        { logo: require('@/assets/logo03.png'), name: '医疗公司2' },
-                        { logo: require('@/assets/logo01.png'), name: '医疗公司3' }
-                    ]
+                    index:'medical',
+                    companies: []
                 },
                 {
                     name: '政府',
-                    companies: [
-                        { logo: require('@/assets/logo.png'), name: '政府项目1' },
-                        { logo: require('@/assets/logo03.png'), name: '政府项目2' },
-                        { logo: require('@/assets/logo04.png'), name: '政府项目3' }
-                    ]
+                    index:'government',
+                    companies: []
                 }
             ],
         };
     },
+    async mounted(){
+        await this.init();
+    },
+
     methods: {
+        async init(){
+            // 获取json数据 并正常展示
+            const categoriesContext = require.context('../categories', true, /\.json$/);
+            
+            this.categories.forEach(e => {
+                const x = e.index;
+                const arr = categoriesContext(`./${x}/${x}.json`);
+                let category = this.companyCategories.find(m=>m.index === e.index)
+                if (category) {
+                    arr.forEach(m=>{
+                        m.logo = require(`@/categories/${x}/${m.logo}`)
+                        category.companies.push(m)
+                    })
+                }
+            });
+            console.log(this.companyCategories);
+            
+        },
+        // 导出pdf功能
         async handleExport(){
+            // 输入div的class 和 导出的名称
             exportToPDF('app','landscape.pdf')
+        },
+        async fetchChick(category,index){
+            console.log(category,index); 
+            let ctg = this.companyCategories.find(x=>x.index === category)
+            console.log(ctg.companies[index])
         }
     }
 };
@@ -130,6 +160,7 @@ export default {
 
 .company-card {
   height: 75px;
+  width: auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10%;
   transition: transform 0.3s ease;
