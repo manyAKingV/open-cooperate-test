@@ -86,14 +86,15 @@
   
 <script>
 import { exportToPDF } from "@/utils/pdfExport";
-
-
+// import marked from 'marked';
+// import matter from 'gray-matter';
 
 export default {
     name: 'App',
     data() {
         return {
-        
+            companies:[],
+            companyData: null,
         };
     },
 
@@ -101,7 +102,7 @@ export default {
 
     },
     async mounted(){
-        
+        this.getCompany();
     },
 
     methods: {
@@ -110,7 +111,69 @@ export default {
             // 输入div的class 和 导出的名称
             exportToPDF('app','landscape.pdf')
         },
+        // 获取公司信息
+        getCompany() {
+            // 使用 require.context 扫描 public/company 目录下的所有.md 文件
+            const mdContext = require.context('@/../public/company', false, /\.md$/);
+            const allMDFiles = mdContext.keys().reduce((acc, filePath) => {
+                // 优化路径处理（兼容Windows/Linux）
+                const fileName = filePath
+                .replace(/^\.\//, '')
+                .replace(/\.md$/, '')
+                .split('/')
+                .pop();
+                // 移除.default获取方式
+                const content = mdContext(filePath); 
+                acc[fileName] = content;
+                return acc;
+            }, {});
+            console.log('Loaded MD files:', allMDFiles);
+            
+            const result = Object.values(allMDFiles).map(content => {
+                const parseMD = (content) => {
+                    if (!content) {
+                        return {
+                            name: '',
+                            describe: '',
+                            website: null,
+                            tags: []
+                        };
+                    }
 
+                    const cleanContent = content
+                        .replace(/<\/?p>/g, '')
+                        .replace(/<br\s*\/?>/g, '\n')
+                        .replace(/<\/?a[^>]*>/g, '');
+
+                    // 核心匹配规则
+                    const patterns = {
+                        name: /名称:\s*([^\n]+)/i,
+                        describe: /描述:\s*([^\n]+)/i,
+                        website: /网站:\s*([^\n]+)/i,
+                        tags: /标签分类:\s*([^\n]+)/i
+                    };
+
+                    const result = {};
+                    for (const key in patterns) {
+                        const match = cleanContent.match(patterns[key]);
+                        if (key === 'tags') {
+                            result[key] = (match?.[1] || '').split(';').map(tag => tag.trim()).filter(Boolean);
+                        } else {
+                            result[key] = (match?.[1] || '').trim();
+                        }
+                    }
+
+                    return result;
+                };
+                const x = parseMD(content)
+                console.log(x);
+                return x
+            });
+
+            console.log(result);
+            
+        },
+        
     }
 };
 </script>
