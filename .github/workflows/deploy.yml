@@ -3,7 +3,7 @@ name: Build and Deploy
 on:
   push:
     branches:
-      - main  # 当代码推送到 main 分支时触发
+      - master  # 当代码推送到 main 分支时触发
 
 jobs:
   build-and-deploy:
